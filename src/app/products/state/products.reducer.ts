@@ -1,20 +1,21 @@
 import { createReducer, on } from '@ngrx/store';
 import { ProductsApiActions, ProductsPageActions } from './products.actions';
 import { Product } from '../product.model';
+import { createEntityAdapter, EntityAdapter, EntityState } from '@ngrx/entity';
 
-export interface ProductsState {
+export interface ProductsState extends EntityState<Product> {
   showProductCode: boolean;
   loading: boolean;
-  products: Product[];
   error: string;
 }
 
-const initialState: ProductsState = {
+const adapter: EntityAdapter<Product> = createEntityAdapter<Product>({});
+
+const initialState: ProductsState = adapter.getInitialState({
   showProductCode: false,
   loading: false,
-  products: [],
   error: '',
-};
+});
 
 export const ProductsReducer = createReducer(
   initialState,
@@ -24,27 +25,26 @@ export const ProductsReducer = createReducer(
       showProductCode: !state.showProductCode,
     };
   }),
-  on(ProductsPageActions.loadProducts, (state) => {
-    return {
+  on(ProductsPageActions.loadProducts, (state) =>
+    adapter.setAll([], {
       ...state,
       loading: true,
-    };
-  }),
-  on(ProductsApiActions.productsLoadSuccess, (state, action) => {
-    return {
+      error: '',
+    })
+  ),
+  on(ProductsApiActions.productsLoadSuccess, (state, action) =>
+    adapter.setAll(action.products, {
       ...state,
-      products: action.products,
       loading: false,
-    };
-  }),
-  on(ProductsApiActions.productsLoadFailure, (state, { error }) => {
-    return {
+    })
+  ),
+  on(ProductsApiActions.productsLoadFailure, (state, { error }) =>
+    adapter.setAll([], {
       ...state,
-      products: [],
       loading: false,
       error,
-    };
-  }),
+    })
+  ),
   on(ProductsPageActions.addProduct, (state) => {
     return {
       ...state,
@@ -52,13 +52,12 @@ export const ProductsReducer = createReducer(
       error: '',
     };
   }),
-  on(ProductsApiActions.productAddSuccess, (state, { product }) => {
-    return {
+  on(ProductsApiActions.productAddSuccess, (state, { product }) =>
+    adapter.addOne(product, {
       ...state,
       loading: false,
-      products: [...state.products, product],
-    };
-  }),
+    })
+  ),
   on(ProductsApiActions.productAddFailure, (state, { error }) => {
     return {
       ...state,
@@ -73,16 +72,12 @@ export const ProductsReducer = createReducer(
       error: '',
     };
   }),
-  on(ProductsApiActions.productUpdateSuccess, (state, { product }) => {
-    const updatedProducts = state.products.map((p) =>
-      p.id === product.id ? product : p
-    );
-    return {
+  on(ProductsApiActions.productUpdateSuccess, (state, { update }) =>
+    adapter.updateOne(update, {
       ...state,
       loading: false,
-      products: updatedProducts,
-    };
-  }),
+    })
+  ),
   on(ProductsApiActions.productUpdateFailure, (state, { error }) => {
     return {
       ...state,
@@ -97,13 +92,12 @@ export const ProductsReducer = createReducer(
       error: '',
     };
   }),
-  on(ProductsApiActions.productDeleteSuccess, (state, { productId }) => {
-    return {
+  on(ProductsApiActions.productDeleteSuccess, (state, { productId }) =>
+    adapter.removeOne(productId, {
       ...state,
       loading: false,
-      products: state.products.filter((p) => p.id !== productId),
-    };
-  }),
+    })
+  ),
   on(ProductsApiActions.productDeleteFailure, (state, { error }) => {
     return {
       ...state,
@@ -112,3 +106,8 @@ export const ProductsReducer = createReducer(
     };
   })
 );
+
+const { selectAll, selectEntities } = adapter.getSelectors();
+
+export const selectProducts = selectAll;
+export const selectProductsEntities = selectEntities;

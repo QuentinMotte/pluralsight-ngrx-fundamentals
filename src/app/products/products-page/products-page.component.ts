@@ -1,11 +1,6 @@
 import { Component } from '@angular/core';
-import { sumProducts } from 'src/app/utils/sum-products';
-import { ProductsService } from '../products.service';
 import { Store } from '@ngrx/store';
-import {
-  ProductsApiActions,
-  ProductsPageActions,
-} from '../state/products.actions';
+import { ProductsPageActions } from '../state/products.actions';
 import {
   selectProducts,
   selectProductsLoading,
@@ -27,10 +22,6 @@ export class ProductsPageComponent {
   errorMessage$ = this.store.select(selectProductsError);
 
   constructor(private store: Store) {}
-
-  ngOnInit() {
-    this.store.dispatch(ProductsPageActions.loadProducts());
-  }
 
   toggleShowProductCode() {
     this.store.dispatch(ProductsPageActions.toggleShowProductCode());

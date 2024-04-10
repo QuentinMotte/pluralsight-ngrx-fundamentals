@@ -15,11 +15,9 @@ import { Router } from '@angular/router';
 
 @Injectable()
 export class ProductsEffects {
-  constructor(
-    private actions$: Actions,
-    private productsService: ProductsService,
-    private router: Router
-  ) {}
+  ngrxOnInitEffects() {
+    return ProductsPageActions.loadProducts();
+  }
 
   loadProducts$ = createEffect(() =>
     this.actions$.pipe(
@@ -56,9 +54,12 @@ export class ProductsEffects {
       ofType(ProductsPageActions.updateProduct),
       concatMap(({ product }) =>
         this.productsService.update(product).pipe(
-          map(() => ProductsApiActions.productUpdateSuccess({ product })),
+          map(() =>
+            ProductsApiActions.productUpdateSuccess({
+              update: { id: product.id, changes: product },
+            })
+          ),
           tap(() => ProductsPageActions.loadProducts()),
-          tap(this.goToProductsPage),
           catchError((error) =>
             of(ProductsApiActions.productUpdateFailure({ error }))
           )
@@ -81,5 +82,22 @@ export class ProductsEffects {
     )
   );
 
-  private goToProductsPage = () => this.router.navigate(['/products']);
+  redirectToProductsPage = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(
+          ProductsApiActions.productAddSuccess,
+          ProductsApiActions.productUpdateSuccess,
+          ProductsApiActions.productDeleteSuccess
+        ),
+        tap(() => this.router.navigate(['/products']))
+      ),
+    { dispatch: false }
+  );
+
+  constructor(
+    private actions$: Actions,
+    private productsService: ProductsService,
+    private router: Router
+  ) {}
 }

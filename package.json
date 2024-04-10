@@ -18,6 +18,8 @@
     "@angular/platform-browser-dynamic": "^16.0.0",
     "@angular/router": "^16.0.0",
     "@ngrx/effects": "16.3",
+    "@ngrx/entity": "16.3",
+    "@ngrx/router-store": "16.3",
     "@ngrx/store": "^16.3.0",
     "@ngrx/store-devtools": "16.3",
     "angular-in-memory-web-api": "^0.16.0",

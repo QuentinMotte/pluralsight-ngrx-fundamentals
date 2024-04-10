@@ -1,10 +1,12 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 
-import { ProductsState } from './products.reducer';
 import { sumProducts } from 'src/app/utils/sum-products';
+import { getRouterSelectors } from '@ngrx/router-store';
+
+import * as fromProducts from './products.reducer';
 
 export const selectProductsState =
-  createFeatureSelector<ProductsState>('products');
+  createFeatureSelector<fromProducts.ProductsState>('products');
 
 export const selectShowProductCode = createSelector(
   selectProductsState,
@@ -13,7 +15,12 @@ export const selectShowProductCode = createSelector(
 
 export const selectProducts = createSelector(
   selectProductsState,
-  (productsState) => productsState.products
+  fromProducts.selectProducts
+);
+
+export const selectProductsEntities = createSelector(
+  selectProductsState,
+  fromProducts.selectProductsEntities
 );
 
 export const selectProductsLoading = createSelector(
@@ -21,12 +28,17 @@ export const selectProductsLoading = createSelector(
   (productsState) => productsState.loading
 );
 
-export const selectProductsTotal = createSelector(
-  selectProductsState,
-  (productsState) => sumProducts(productsState.products)
-);
+export const selectProductsTotal = createSelector(selectProducts, sumProducts);
 
 export const selectProductsError = createSelector(
   selectProductsState,
   (productsState) => productsState.error
+);
+
+export const { selectRouteParams } = getRouterSelectors();
+
+export const selectProductById = createSelector(
+  selectProductsEntities,
+  selectRouteParams,
+  (products, { id }) => products[id]
 );

@@ -11,6 +11,7 @@ import { AppComponent } from './app.component';
 import { InMemoryDataService } from './in-memory-data.service';
 import { HomeComponent } from './home/home.component';
 import { EffectsModule } from '@ngrx/effects';
+import { routerReducer, StoreRouterConnectingModule } from '@ngrx/router-store';
 
 @NgModule({
   declarations: [AppComponent, HomeComponent],
@@ -28,6 +29,8 @@ import { EffectsModule } from '@ngrx/effects';
       logOnly: environment.production,
     }),
     EffectsModule.forRoot([]),
+    StoreModule.forFeature('router', routerReducer),
+    StoreRouterConnectingModule.forRoot(),
   ],
   providers: [],
   bootstrap: [AppComponent],
