@@ -8,6 +8,8 @@ import { ProductsListComponent } from './products-list/products-list.component';
 import { ProductEditComponent } from './product-edit/product-edit.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ProductPageComponent } from './product-page/product-page.component';
+import { EffectsModule } from '@ngrx/effects';
+import { ProductsEffects } from './state/products.effects';
 
 @NgModule({
   declarations: [
@@ -21,6 +23,7 @@ import { ProductPageComponent } from './product-page/product-page.component';
     ProductsRoutingModule,
     ReactiveFormsModule,
     StoreModule.forFeature('products', ProductsReducer),
+    EffectsModule.forFeature([ProductsEffects]),
   ],
 })
 export class ProductsModule {}

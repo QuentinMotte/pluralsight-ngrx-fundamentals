@@ -16,12 +16,12 @@ export const ProductsApiActions = createActionGroup({
   source: 'Products API',
   events: {
     'Products Load Success': props<{ products: Product[] }>(),
-    'Products Load Failure': props<{ message: string }>(),
+    'Products Load Failure': props<{ error: string }>(),
     'Product Add Success': props<{ product: Product }>(),
-    'Product Add Failure': props<{ message: string }>(),
+    'Product Add Failure': props<{ error: string }>(),
     'Product Update Success': props<{ product: Product }>(),
-    'Product Update Failure': props<{ message: string }>(),
+    'Product Update Failure': props<{ error: string }>(),
     'Product Delete Success': props<{ productId: number }>(),
-    'Product Delete Failure': props<{ message: string }>(),
+    'Product Delete Failure': props<{ error: string }>(),
   },
 });
