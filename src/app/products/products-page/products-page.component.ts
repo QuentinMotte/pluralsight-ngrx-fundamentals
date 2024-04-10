@@ -29,10 +29,6 @@ export class ProductsPageComponent {
   constructor(private store: Store) {}
 
   ngOnInit() {
-    this.getProducts();
-  }
-
-  getProducts() {
     this.store.dispatch(ProductsPageActions.loadProducts());
   }
 

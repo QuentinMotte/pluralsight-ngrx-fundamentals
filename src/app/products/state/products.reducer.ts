@@ -44,5 +44,71 @@ export const ProductsReducer = createReducer(
       loading: false,
       error,
     };
+  }),
+  on(ProductsPageActions.addProduct, (state) => {
+    return {
+      ...state,
+      loading: true,
+      error: '',
+    };
+  }),
+  on(ProductsApiActions.productAddSuccess, (state, { product }) => {
+    return {
+      ...state,
+      loading: false,
+      products: [...state.products, product],
+    };
+  }),
+  on(ProductsApiActions.productAddFailure, (state, { error }) => {
+    return {
+      ...state,
+      loading: false,
+      error,
+    };
+  }),
+  on(ProductsPageActions.updateProduct, (state) => {
+    return {
+      ...state,
+      loading: true,
+      error: '',
+    };
+  }),
+  on(ProductsApiActions.productUpdateSuccess, (state, { product }) => {
+    const updatedProducts = state.products.map((p) =>
+      p.id === product.id ? product : p
+    );
+    return {
+      ...state,
+      loading: false,
+      products: updatedProducts,
+    };
+  }),
+  on(ProductsApiActions.productUpdateFailure, (state, { error }) => {
+    return {
+      ...state,
+      loading: false,
+      error,
+    };
+  }),
+  on(ProductsPageActions.deleteProduct, (state) => {
+    return {
+      ...state,
+      loading: true,
+      error: '',
+    };
+  }),
+  on(ProductsApiActions.productDeleteSuccess, (state, { productId }) => {
+    return {
+      ...state,
+      loading: false,
+      products: state.products.filter((p) => p.id !== productId),
+    };
+  }),
+  on(ProductsApiActions.productDeleteFailure, (state, { error }) => {
+    return {
+      ...state,
+      loading: false,
+      error,
+    };
   })
 );

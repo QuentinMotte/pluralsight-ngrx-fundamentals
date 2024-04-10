@@ -18,7 +18,9 @@ import { EffectsModule } from '@ngrx/effects';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    HttpClientInMemoryWebApiModule.forRoot(InMemoryDataService),
+    HttpClientInMemoryWebApiModule.forRoot(InMemoryDataService, {
+      delay: 0,
+    }),
     StoreModule.forRoot({}),
     StoreDevtoolsModule.instrument({
       name: 'NGRX Demo App',
